@@ -79,6 +79,26 @@ done
 
 shift $((OPTIND-1))
 
+echo "Checking bind list"
+
+# Split the string by commas into an array
+IFS=',' read -r -a bindPaths <<< "$bindList"
+
+for item in "${bindPaths[@]}"
+do
+  # Split the item by colon to get pathA and pathB
+  IFS=':' read -r -a paths <<< "$item"
+  pathLocal="${paths[0]}"
+
+  if [ ! -d "$pathLocal" ]; then
+    mkdir -p "$pathLocal"
+    echo "  Created directory: $pathLocal"
+  fi
+  echo "Mount: ${paths[0]}  to  ${paths[1]}"
+done
+
+echo
+
 date=`date +%Y%m%d`
 
 # Makes python output unbuffered
