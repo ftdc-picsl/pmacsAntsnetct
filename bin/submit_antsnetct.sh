@@ -90,7 +90,7 @@ do
   IFS=':' read -r -a paths <<< "$item"
   pathLocal="${paths[0]}"
 
-  if [ ! -d "$pathLocal" ]; then
+  if [[ ! -d "$pathLocal" ]] && [[ ! -f "$pathLocal" ]]; then
     mkdir -p "$pathLocal"
     echo "  Created directory: $pathLocal"
   fi
