@@ -132,7 +132,7 @@ date=`date +%Y%m%d`
 
 # Makes python output unbuffered
 export SINGULARITYENV_PYTHONUNBUFFERED=1
-
+export SINGULARITYENV_ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=$numSlots
 export SINGULARITYENV_TMPDIR="/tmp"
 
 export SINGULARITYENV_TEMPLATEFLOW_HOME=/opt/templateflow
@@ -148,7 +148,6 @@ $bsubCmd -o "${outputBIDS}/code/logs/antsnetct_${date}_%J.txt" -J antsnetct -n $
     --cleanenv --no-home --home /home/antspyuser \
     --bind /project/ftdc_pipeline/templateflow-d259ce39a:/opt/templateflow,/scratch:/tmp,$bindList \
     $repoDir/containers/antsnetct-${antsnetctVersion}.sif \
-    --num-threads $numSlots \
     --input-dataset ${inputBIDS} \
     --output-dataset ${outputBIDS} \
     "$@"
