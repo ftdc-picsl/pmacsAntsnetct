@@ -63,6 +63,8 @@ cat << HELP
       Command to use for submitting the job (default=$bsubCmd).
       Values must be quoted if including options, eg -b "bsub -q ftdc_normal"
 
+    -u cx|longitudinal
+      Print *antsnetct* usage (rather than this script) for the specified mode and exit.
 
     Additional args after -- are passed to the antsnetct container.
 
@@ -75,8 +77,9 @@ bindList=""
 logPrefix="antsnetct"
 inputBIDS=""
 outputBIDS=""
+whichUsage=""
 
-while getopts "B:b:i:l:m:n:o:v:h" opt; do
+while getopts "B:b:i:l:m:n:o:u:v:h" opt; do
   case $opt in
     B) bindList=$OPTARG;;
     b) bsubCmd=$OPTARG;;
@@ -86,11 +89,36 @@ while getopts "B:b:i:l:m:n:o:v:h" opt; do
     m) memMb=$OPTARG;;
     n) numSlots=$OPTARG;;
     o) outputBIDS=$OPTARG;;
+    u) whichUsage=$OPTARG;;
     v) antsnetctVersion=$OPTARG;;
     \?) echo "Unknown option $OPTARG"; exit 2;;
     :) echo "Option $OPTARG requires an argument"; exit 2;;
   esac
 done
+
+
+# Makes python output unbuffered
+export SINGULARITYENV_PYTHONUNBUFFERED=1
+export SINGULARITYENV_ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=$numSlots
+export SINGULARITYENV_TMPDIR="/tmp"
+export SINGULARITYENV_TEMPLATEFLOW_HOME=/opt/templateflow
+
+if [[ -n $whichUsage ]]; then
+  if [[ $whichUsage == "cx" ]]; then
+    singularity run --cleanenv --no-home --home /home/antspyuser \
+        --bind /project/ftdc_pipeline/templateflow-d259ce39a:/opt/templateflow,/scratch:/tmp \
+        $repoDir/containers/antsnetct-${antsnetctVersion}.sif --help
+    exit 1
+  elif [[ $whichUsage == "longitudinal" ]]; then
+    singularity run --cleanenv --no-home --home /home/antspyuser \
+        --bind /project/ftdc_pipeline/templateflow-d259ce39a:/opt/templateflow,/scratch:/tmp \
+        $repoDir/containers/antsnetct-${antsnetctVersion}.sif --longitudinal --help
+    exit 1
+  else
+    echo "Unknown usage $whichUsage"
+    exit 1
+  fi
+fi
 
 shift $((OPTIND-1))
 
@@ -132,13 +160,6 @@ mkdir -p ${outputBIDS}/code/logs
 echo "Mount: ${outputBIDS}  to  ${outputBIDS}"
 
 date=`date +%Y%m%d`
-
-# Makes python output unbuffered
-export SINGULARITYENV_PYTHONUNBUFFERED=1
-export SINGULARITYENV_ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=$numSlots
-export SINGULARITYENV_TMPDIR="/tmp"
-
-export SINGULARITYENV_TEMPLATEFLOW_HOME=/opt/templateflow
 
 if [[ ! -f $repoDir/containers/antsnetct-${antsnetctVersion}.sif ]]; then
   echo "Container antsnetct-${antsnetctVersion}.sif not found in $repoDir/containers"
