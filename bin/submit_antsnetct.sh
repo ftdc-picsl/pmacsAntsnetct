@@ -50,6 +50,9 @@ cat << HELP
 
   Optional args:
 
+    -l log_prefix
+      Prefix to the log file name under the output_bids/code/logs directory.
+
     -m mem_mb
       Memory in MB to request for the job (default=$memMB).
 
@@ -69,7 +72,7 @@ HELP
 
 antsnetctVersion=""
 bindList=""
-logPrefix=""
+logPrefix="antsnetct"
 inputBIDS=""
 outputBIDS=""
 
@@ -142,7 +145,7 @@ if [[ ! -f $repoDir/containers/antsnetct-${antsnetctVersion}.sif ]]; then
   exit 1
 fi
 
-$bsubCmd -o "${outputBIDS}/code/logs/antsnetct_${date}_%J.txt" -J antsnetct -n $numSlots \
+$bsubCmd -o "${outputBIDS}/code/logs/${logPrefix}_${date}_%J.txt" -J antsnetct -n $numSlots \
   -R "rusage[mem=${memMb}MB]" \
   singularity run \
     --cleanenv --no-home --home /home/antspyuser \
