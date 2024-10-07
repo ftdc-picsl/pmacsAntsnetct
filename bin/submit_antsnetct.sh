@@ -144,7 +144,7 @@ if [[ ! -d  "$inputBIDS" ]]; then
   echo "Input BIDS directory $inputBids does not exist"
   exit 1
 else
-    bindList="${bindList},${inputBIDS}:${inputBIDS}"
+    bindList="${bindList},${inputBIDS}:${inputBIDS}:ro"
     echo "Mount: ${inputBids}  to  ${inputBids}"
 fi
 
