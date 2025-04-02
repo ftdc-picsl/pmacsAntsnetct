@@ -145,7 +145,7 @@ if [[ ! -d  "$inputBIDS" ]]; then
   exit 1
 else
     bindList="${bindList},${inputBIDS}:${inputBIDS}:ro"
-    echo "Mount: ${inputBids}  to  ${inputBids}"
+    echo "Mount: ${inputBIDS}  to  ${inputBIDS}"
 fi
 
 if [[ ! -d  "$outputBIDS" ]]; then
