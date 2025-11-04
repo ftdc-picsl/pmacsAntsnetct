@@ -252,7 +252,6 @@ elif [[ ${antsnetctExecutable} == "antsnetct_parcellate" ]]; then
   else
     bindList="${bindList},${inputBIDS}:${inputBIDS}"
   fi
-  bindList="${bindList},${inputBIDS}:${inputBIDS}"
   echo "Mount: ${inputBIDS}  to  ${inputBIDS}"
   ioArgs="--input-dataset ${inputBIDS}"
   logOption="${inputBIDS}/code/logs/${logPrefix}_${date}_%J_%I.txt"
