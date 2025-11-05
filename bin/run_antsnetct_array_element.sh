@@ -67,9 +67,6 @@ while getopts "B:v:h" opt; do
   esac
 done
 
-memMb=8192
-numSlots=$LSB_DJOB_NUMPROC
-
 shift $((OPTIND-1))
 antsnetctExecutable=$1
 inputArrayFile=$2
