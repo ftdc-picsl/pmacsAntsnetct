@@ -1,6 +1,6 @@
 #!/bin/bash
 
-module load apptainer
+module load apptainer/1.4.1
 
 scriptPath=$(readlink -f "$0")
 scriptDir=$(dirname "${scriptPath}")
