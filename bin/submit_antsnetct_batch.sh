@@ -106,7 +106,6 @@ cat << HELP
     and will be added to the bind list for the container.
 
 
-
 HELP
 
 }
@@ -221,13 +220,17 @@ date=`date +%Y%m%d`
 ioArgs=""
 logOption=""
 
+# Add /scratch mounted as /tmp
+if [[ -z "$bindList" ]]; then
+  bindList="/scratch:/tmp"
+else
+  bindList="${bindList},/scratch:/tmp"
+fi
+echo "Mount: /scratch  to  /tmp"
+
 if [[ ${antsnetctExecutable} == "antsnetct" ]]; then
 
-  if [[ -z "$bindList" ]]; then
-    bindList="${inputBIDS}:${inputBIDS}:ro"
-  else
-    bindList="${bindList},${inputBIDS}:${inputBIDS}:ro"
-  fi
+  bindList="${bindList},${inputBIDS}:${inputBIDS}:ro"
 
   echo "Mount: ${inputBIDS}  to  ${inputBIDS}"
 
@@ -247,12 +250,10 @@ if [[ ${antsnetctExecutable} == "antsnetct" ]]; then
 
 elif [[ ${antsnetctExecutable} == "antsnetct_parcellate" ]]; then
   # Parcellate outputs to input dataset - mount read-write
-  if [[ -z "$bindList" ]]; then
-    bindList="${inputBIDS}:${inputBIDS}"
-  else
-    bindList="${bindList},${inputBIDS}:${inputBIDS}"
-  fi
+  bindList="${bindList},${inputBIDS}:${inputBIDS}"
+
   echo "Mount: ${inputBIDS}  to  ${inputBIDS}"
+
   ioArgs="--input-dataset ${inputBIDS}"
   logOption="${inputBIDS}/code/logs/${logPrefix}_${date}_%J_%I.txt"
 else
