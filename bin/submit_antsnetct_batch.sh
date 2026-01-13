@@ -271,12 +271,12 @@ if [[ ! -f $repoDir/containers/antsnetct-${antsnetctVersion}.sif ]]; then
 fi
 
 numArrayElements=$(wc -l < $batchInputFile)
-arrayOption="${antsnetctExecutable}[1-$numArrayElements]"
+arrayOption="${logPrefix}[1-$numArrayElements]"
 if [[ $concurrency -gt 0 ]]; then
-  arrayOption="${antsnetctExecutable}[1-$numArrayElements]%$concurrency"
+  arrayOption="${logPrefix}[1-$numArrayElements]%$concurrency"
 fi
 
-$bsubCmd \
+jobID=$($bsubCmd \
   -o "${logOption}" \
   -J "${arrayOption}" \
   -n $numSlots \
@@ -288,5 +288,24 @@ $bsubCmd \
   "${batchInputFile}" \
     -- \
     ${ioArgs} \
-    "$@"
+    "$@" \
+  2>/dev/null | awk -F'[<>]' '/Job </{print $2}')
 
+# Write a key for which array index corresponds to which participant/session
+keyFile="${outputBIDS}/code/logs/${logPrefix}_array_key_${date}_${jobID}.tsv"
+
+echo "Writing array job key to $keyFile"
+echo "Note: array job log files will appear after job exit"
+
+echo -e "job_name\tparticipant\tsession\tlog_file" > $keyFile
+lineNum=0
+
+while IFS= read -r line || [[ -n "$line" ]]; do
+  lineNum=$((lineNum + 1))
+  subjSess=(${line//,/ })
+  if [[ ${#subjSess[@]} -lt 2 ]]; then
+    subjSess[1]="NA"
+  fi
+  echo -en "${logPrefix}[${lineNum}]\t${subjSess[0]}\t${subjSess[1]}\t" >> $keyFile
+  echo -en "${logPrefix}_${date}_${jobID}_${lineNum}.txt\n" >> $keyFile
+done < "$batchInputFile"

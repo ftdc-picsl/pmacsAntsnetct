@@ -105,6 +105,10 @@ if [[ ${#subjSess[@]} -eq 2 ]]; then
   participantArgs+=(--session "${subjSess[1]}")
 fi
 
+# log subject,session
+echo "${subjSess[0]},${subjSess[1]}"
+echo "Processing line $lineNum: participant=${subjSess[0]} session=${subjSess[1]}"
+
 apptainer exec \
   --cleanenv --no-home --home /home/antspyuser \
   --bind $bindList \
