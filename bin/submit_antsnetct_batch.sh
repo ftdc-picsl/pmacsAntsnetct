@@ -75,7 +75,7 @@ cat << HELP
       Prefix to the log file name under the output_bids/code/logs directory.
 
     -m mem_mb
-      Memory in MB to request for each job (default=$memMB).
+      Memory in MB to request for each job (default=$memMb).
 
     -n nslots
       Number of slots to request for each job (default=$numSlots).
