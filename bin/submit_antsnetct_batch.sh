@@ -235,7 +235,6 @@ if [[ ${antsnetctExecutable} == "antsnetct" ]]; then
   echo "Mount: ${inputBIDS}  to  ${inputBIDS}"
 
   ioArgs="--input-dataset ${inputBIDS} --output-dataset ${outputBIDS}"
-  logOption="${outputBIDS}/code/logs/${logPrefix}_${date}_%J_%I.txt"
 
   # Create output and logs directory as needed
   if [[ ! -d  "$outputBIDS" ]]; then
@@ -255,11 +254,17 @@ elif [[ ${antsnetctExecutable} == "antsnetct_parcellate" ]]; then
   echo "Mount: ${inputBIDS}  to  ${inputBIDS}"
 
   ioArgs="--input-dataset ${inputBIDS}"
-  logOption="${inputBIDS}/code/logs/${logPrefix}_${date}_%J_%I.txt"
+
+  # We assume ${outputBIDS}/code/logs exist, which it will if it was created
+  # by antsnetct
+  outputBIDS=${inputBIDS}
+
 else
   echo "Unknown antsnetct executable: ${antsnetctExecutable}"
   exit 1
 fi
+
+logOption="${outputBIDS}/code/logs/${logPrefix}_${date}_%J_%I.txt"
 
 # templateflow is required
 bindList="${bindList},${templateflowHome}:${templateflowHome}"
