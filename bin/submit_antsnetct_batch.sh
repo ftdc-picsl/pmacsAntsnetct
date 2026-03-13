@@ -67,6 +67,8 @@ cat << HELP
 
     batch_input_file
       Text file with one participant or participant,session per line. Do not include the sub- or ses- prefixes.
+      The maximum length of this file is 1000 lines, if you have more subjects than this, split them with
+      'split', eg 'split -l 900 my_list my_batch_'.
 
 
   Optional args:
@@ -185,6 +187,13 @@ fi
 
 if [[ ! -f $batchInputFile ]]; then
   echo "Batch input file $batchInputFile not found"
+  exit 1
+fi
+
+batchSize=$( wc -l $batchInputFile )
+
+if [[ "$batchSize" -gt 1000 ]]; then
+  echo "Batch input file exceeds maximum size of 1000 lines"
   exit 1
 fi
 
