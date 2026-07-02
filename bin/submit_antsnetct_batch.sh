@@ -190,7 +190,7 @@ if [[ ! -f $batchInputFile ]]; then
   exit 1
 fi
 
-batchSize=$( wc -l $batchInputFile )
+batchSize=$( wc -l $batchInputFile | cut -d ' ' -f 1)
 
 if [[ "$batchSize" -gt 1000 ]]; then
   echo "Batch input file exceeds maximum size of 1000 lines"
